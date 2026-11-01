@@ -1,0 +1,6 @@
+@Reto_Tecnico_Andres_Gallegos_HostAddress = http://localhost:5172
+
+GET {{Reto_Tecnico_Andres_Gallegos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

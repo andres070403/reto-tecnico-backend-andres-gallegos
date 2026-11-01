@@ -1,0 +1,150 @@
+{
+  "info": {
+    "name": "Pedidos API - Reto Técnico",
+    "description": "El login guarda el token en la variable de colección {{token}}, que el resto de las peticiones reutiliza automáticamente vía Bearer Auth heredado.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "f1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5172", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "pedidoId", "value": "1", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('token', body.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@pedidos.com\",\n  \"password\": \"Admin123*\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('token', body.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@pedidos.com\",\n  \"password\": \"User123*\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "GET /api/pedidos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "pedidos"] }
+          }
+        },
+        {
+          "name": "GET /api/pedidos/{id}",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "{{pedidoId}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/pedidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('pedidoId', body.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroPedido\": \"PE-POSTMAN-001\",\n  \"cliente\": \"Cliente desde Postman\",\n  \"fecha\": \"2026-02-01T00:00:00\",\n  \"total\": 150.00,\n  \"estado\": \"Registrado\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "pedidos"] }
+          }
+        },
+        {
+          "name": "PUT /api/pedidos/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"Cliente actualizado desde Postman\",\n  \"fecha\": \"2026-02-02T00:00:00\",\n  \"total\": 200.00,\n  \"estado\": \"EnProceso\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "{{pedidoId}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/pedidos/{id}",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "{{pedidoId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
